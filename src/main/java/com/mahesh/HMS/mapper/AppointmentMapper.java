@@ -2,6 +2,9 @@ package com.mahesh.HMS.mapper;
 
 import com.mahesh.HMS.dto.AppointmentDTO;
 import com.mahesh.HMS.model.Appointment;
+import com.mahesh.HMS.model.Doctor;
+import com.mahesh.HMS.model.Patient;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -25,5 +28,17 @@ public class AppointmentMapper {
     public List<AppointmentDTO> toDTOList(List<Appointment> appointments) {
         return appointments.stream().map(this::toDTO).toList();
     }
+    public Appointment toEntity(AppointmentDTO dto, Patient patient, Doctor doctor) {
+        if (dto == null) return null;
+
+        Appointment appointment = new Appointment();
+        appointment.setId(dto.getId());
+        appointment.setDate(dto.getDate());
+        appointment.setPatient(patient);
+        appointment.setDoctor(doctor);
+        return appointment;
+    }
+
+
 }
 

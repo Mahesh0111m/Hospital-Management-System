@@ -1,90 +1,69 @@
 package com.mahesh.HMS.service;
 
+import com.mahesh.HMS.dto.BillDTO;
+import com.mahesh.HMS.mapper.BillMapper;
 import com.mahesh.HMS.model.Appointment;
 import com.mahesh.HMS.model.Bill;
-import com.mahesh.HMS.model.Patient;
 import com.mahesh.HMS.repository.AppointmentRepository;
 import com.mahesh.HMS.repository.BillRepository;
-import com.mahesh.HMS.repository.PatientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import java.util.*;
+
+import java.util.Optional;
 
 @Service
 public class BillService {
 
     @Autowired
     private BillRepository billRepository;
+
     @Autowired
     private AppointmentRepository appointmentRepository;
 
+    @Autowired
+    private BillMapper billMapper;
 
-    public Bill addBill(Long appointmentId , Bill bill){
-        try {
-            Appointment appointment = appointmentRepository.findById(appointmentId).orElseThrow(()-> new RuntimeException("No Appointments found"));
+    public BillDTO addBill(Long appointmentId, Bill bill) {
+        Appointment appointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new RuntimeException("Appointment not found"));
 
-            bill.setAppointment(appointment);
-            return billRepository.save(bill);
-        }
-        catch (Exception e){
-            System.out.println("Exception" + e.getMessage());
+        bill.setAppointment(appointment);
+        Bill savedBill = billRepository.save(bill);
+
+        return billMapper.toDTO(savedBill);
+    }
+
+    public Page<BillDTO> getAllBills(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Bill> bills = billRepository.findAll(pageable);
+
+        return bills.map(billMapper::toDTO);
+    }
+
+    public BillDTO getBillById(Long id) {
+        Optional<Bill> bill = billRepository.findById(id);
+        return bill.map(billMapper::toDTO).orElse(null);
+    }
+
+    public BillDTO updateBillbyID(Long id, Bill updatedBill) {
+        Optional<Bill> existingBill = billRepository.findById(id);
+
+        if (existingBill.isPresent()) {
+            Bill bill = existingBill.get();
+            bill.setAmount(updatedBill.getAmount());
+            bill.setStatus(updatedBill.getStatus());
+
+            Bill savedBill = billRepository.save(bill);
+            return billMapper.toDTO(savedBill);
+        } else {
             return null;
         }
     }
 
-    public Page<Bill> getAllBills(int page , int size){
-        try {
-            Pageable pageable = PageRequest.of(page , size);
-            return billRepository.findAll(pageable);
-        }
-        catch (Exception e){
-            System.out.println("Exception" + e.getMessage());
-            return null;
-        }
-    }
-
-    public Bill getBillById(Long id){
-        try {
-            return billRepository.findById(id).orElse(null);
-        }
-        catch (Exception e){
-            System.out.println("Exception" + e.getMessage());
-            return null;
-        }
-    }
-
-    public Bill updateBillbyID(Long id, Bill updatedBill){
-        try {
-            Optional<Bill> existingBill = billRepository.findById(id);
-            if(existingBill.isPresent()){
-                Bill b = existingBill.get();
-                b.setAmount(updatedBill.getAmount());
-                b.setStatus(updatedBill.getStatus());
-
-                Bill savedBill = billRepository.save(b);
-                return savedBill;
-            }
-            else {
-                System.out.println("No Bill found");
-                return null;
-            }
-        }
-        catch (Exception e){
-            System.out.println("Exception" + e.getMessage());
-            return null;
-        }
-    }
-
-    public void deleteBillbyId(Long id){
-        try {
-            billRepository.deleteById(id);
-            System.out.println("deleted bill");
-        }
-        catch (Exception e){
-            System.out.println("Exception" + e.getMessage());
-        }
+    public void deleteBillbyId(Long id) {
+        billRepository.deleteById(id);
     }
 }

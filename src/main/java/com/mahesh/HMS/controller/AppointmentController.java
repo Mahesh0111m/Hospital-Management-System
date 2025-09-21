@@ -1,5 +1,6 @@
 package com.mahesh.HMS.controller;
 
+import com.mahesh.HMS.dto.AppointmentDTO;
 import com.mahesh.HMS.model.Appointment;
 import com.mahesh.HMS.model.Doctor;
 import com.mahesh.HMS.model.Patient;
@@ -18,24 +19,24 @@ public class AppointmentController {
     private AppointmentService appointmentService;
 
     @PostMapping("/{patientId}/{doctorId}")
-    public Appointment addAppointment(@PathVariable Long patientId , @PathVariable Long doctorId ,@RequestBody Appointment appointment){
-        return appointmentService.addAppointment(patientId , doctorId ,appointment);
+    public AppointmentDTO addAppointment(@PathVariable Long patientId , @PathVariable Long doctorId , @RequestBody AppointmentDTO appointmentDTO){
+        return appointmentService.addAppointment(patientId , doctorId ,appointmentDTO);
     }
 
     @GetMapping
-    public Page<Appointment> getAllAppointments(@RequestParam(defaultValue = "0") int page ,
+    public Page<AppointmentDTO> getAllAppointments(@RequestParam(defaultValue = "0") int page ,
                                                 @RequestParam(defaultValue = "10") int size){
         return appointmentService.getAllAppointments(page , size);
     }
 
     @GetMapping("/{id}")
-    public Appointment getAppointmentById(@PathVariable Long id){
+    public AppointmentDTO getAppointmentById(@PathVariable Long id){
         return appointmentService.getAppointmentById(id);
     }
 
     @PutMapping("/{id}")
-    public Appointment updateAppointmentbyID(@PathVariable Long id , @RequestBody Appointment appointment){
-        return appointmentService.updateAppointmentbyID(id , appointment);
+    public AppointmentDTO updateAppointmentbyID(@PathVariable Long id , @RequestBody AppointmentDTO appointmentDTO){
+        return appointmentService.updateAppointmentbyID(id , appointmentDTO);
     }
 
     @DeleteMapping("/{id}")
@@ -44,7 +45,7 @@ public class AppointmentController {
     }
 
     @GetMapping("/patient/{patientId}")
-    public List<Appointment> getAppointmentsByPatientId(@PathVariable Long patientId){
+    public List<AppointmentDTO> getAppointmentsByPatientId(@PathVariable Long patientId){
        return appointmentService.getAppointmentsByPatientId(patientId);
     }
 }

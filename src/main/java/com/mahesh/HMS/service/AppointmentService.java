@@ -1,5 +1,7 @@
 package com.mahesh.HMS.service;
 
+import com.mahesh.HMS.dto.AppointmentDTO;
+import com.mahesh.HMS.mapper.AppointmentMapper;
 import com.mahesh.HMS.model.Appointment;
 import com.mahesh.HMS.model.Doctor;
 import com.mahesh.HMS.model.Patient;
@@ -25,14 +27,18 @@ public class AppointmentService {
     private DoctorRepository doctorRepository;
     @Autowired
     private AppointmentRepository appointmentRepository;
-    public Appointment addAppointment(Long patientId , Long doctorId , Appointment appointment){
+
+    @Autowired
+    private AppointmentMapper appointmentMapper;
+
+    public AppointmentDTO addAppointment(Long patientId , Long doctorId , AppointmentDTO appointmentDTO){
         try{
             Patient patient = patientRepository.findById(patientId).orElseThrow(()->new RuntimeException("No Patient found"));
             Doctor doctor = doctorRepository.findById(doctorId).orElseThrow(()-> new RuntimeException("No Doctor found"));
 
-            appointment.setPatient(patient);
-            appointment.setDoctor(doctor);
-            return appointmentRepository.save(appointment);
+            Appointment appointment = appointmentMapper.toEntity(appointmentDTO , patient , doctor);
+            Appointment savedAppointment = appointmentRepository.save(appointment);
+             return appointmentMapper.toDTO(savedAppointment);
         }
         catch (Exception e){
             System.out.println("Exception "+ e.getMessage());
@@ -41,10 +47,11 @@ public class AppointmentService {
     }
 
 
-    public Page<Appointment> getAllAppointments(int page , int size){
+    public Page<AppointmentDTO> getAllAppointments(int page , int size){
         try {
             Pageable pageable = PageRequest.of(page , size);
-            return appointmentRepository.findAll(pageable);
+            Page<Appointment> appointments = appointmentRepository.findAll(pageable);
+            return appointments.map(appointmentMapper::toDTO);
         }
         catch (Exception e){
             System.out.println("Exception "+ e.getMessage());
@@ -52,9 +59,10 @@ public class AppointmentService {
         }
     }
 
-    public Appointment getAppointmentById(Long id){
+    public AppointmentDTO getAppointmentById(Long id){
         try {
-            return appointmentRepository.findById(id).orElse(null);
+            Appointment appointment = appointmentRepository.findById(id).orElse(null);
+            return appointmentMapper.toDTO(appointment);
         }
         catch (Exception e){
             System.out.println("Exception "+ e.getMessage());
@@ -62,23 +70,24 @@ public class AppointmentService {
         }
     }
 
-    public Appointment updateAppointmentbyID(Long id , Appointment updatedAppointment){
+    public AppointmentDTO updateAppointmentbyID(Long id , AppointmentDTO appointmentDTO){
         try {
             Optional<Appointment> existingAppointment = appointmentRepository.findById(id);
             if(existingAppointment.isPresent()){
                 Appointment a = existingAppointment.get();
 
-                Patient p = patientRepository.findById(updatedAppointment.getPatient().getId())
+                Patient p = patientRepository.findById(appointmentDTO.getPatientId())
                                             .orElseThrow(()->new RuntimeException("No Patientfound"));
 
-                Doctor d = doctorRepository.findById(updatedAppointment.getDoctor().getId())
+                Doctor d = doctorRepository.findById(appointmentDTO.getDoctorId())
                                 .orElseThrow(()-> new RuntimeException("Doctor not found"));
 
                 a.setPatient(p);
                 a.setDoctor(d);
-                a.setDate(updatedAppointment.getDate());
+                a.setDate(appointmentDTO.getDate());
 
-                return appointmentRepository.save(a);
+                Appointment  savedAppointment = appointmentRepository.save(a);
+                return appointmentMapper.toDTO(savedAppointment);
             }
             else {
                 System.out.println("No appointment found");
@@ -102,7 +111,8 @@ public class AppointmentService {
         }
     }
 
-    public List<Appointment> getAppointmentsByPatientId(Long patientId){
-        return appointmentRepository.findByPatientId(patientId);
+    public List<AppointmentDTO> getAppointmentsByPatientId(Long patientId){
+        List<Appointment> savedAppointment = appointmentRepository.findByPatientId(patientId);
+        return appointmentMapper.toDTOList(savedAppointment);
     }
 }
