@@ -113,6 +113,17 @@ public class AppointmentService {
 
     public List<AppointmentDTO> getAppointmentsByPatientId(Long patientId){
         List<Appointment> savedAppointment = appointmentRepository.findByPatientId(patientId);
-        return appointmentMapper.toDTOList(savedAppointment);
+        return appointmentMapper.toDTOList(savedAppointment , false);
     }
+
+    public List<AppointmentDTO> getAppointmentsByDoctorId(Long doctorId) {
+        List<Appointment> appointments = appointmentRepository.findAllAppointmentsByDoctorId(doctorId);
+        return appointmentMapper.toDTOList(appointments, false); // exclude bill
+    }
+
+    public List<AppointmentDTO> getUpcomingAppointmentsForPatient(Long patientId) {
+        List<Appointment> appointments = appointmentRepository.findUpcomingAppointmentsByPatientId(patientId);
+        return appointmentMapper.toDTOList(appointments, false); // exclude bill info
+    }
+
 }

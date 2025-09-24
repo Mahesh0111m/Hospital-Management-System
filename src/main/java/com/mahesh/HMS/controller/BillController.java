@@ -1,6 +1,7 @@
 package com.mahesh.HMS.controller;
 
 import com.mahesh.HMS.dto.BillDTO;
+import com.mahesh.HMS.dto.PaginatedResponsesDTO;
 import com.mahesh.HMS.model.Bill;
 import com.mahesh.HMS.service.BillService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +21,18 @@ public class BillController {
     }
 
     @GetMapping
-    public Page<BillDTO> getAllBills(@RequestParam(defaultValue = "0") int page,
-                                     @RequestParam(defaultValue = "10") int size) {
-        return billService.getAllBills(page, size);
+    public PaginatedResponsesDTO<BillDTO> getAllBills(@RequestParam(defaultValue = "0") int page,
+                                                      @RequestParam(defaultValue = "10") int size) {
+        Page<BillDTO> billPage = billService.getAllBills(page, size);
+        return new PaginatedResponsesDTO<>(
+                billPage.getContent(),
+                billPage.getNumber(),
+                billPage.getSize(),
+                billPage.getTotalElements(),
+                billPage.getTotalPages()
+        );
     }
+
 
     @GetMapping("/{id}")
     public BillDTO getBillById(@PathVariable Long id) {
@@ -38,5 +47,10 @@ public class BillController {
     @DeleteMapping("/{id}")
     public void deleteBillbyId(@PathVariable Long id) {
         billService.deleteBillbyId(id);
+    }
+
+    @GetMapping("/total/{patientId}")
+    public Double getTotalBilledAmount(@PathVariable Long patientId) {
+        return billService.getTotalBilledAmountForPatient(patientId);
     }
 }

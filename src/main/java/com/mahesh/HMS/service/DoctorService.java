@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -49,4 +50,12 @@ public class DoctorService {
     public void deleteDoctorbyId(Long id) {
         doctorRepository.deleteById(id);
     }
+
+    public List<DoctorDTO> getDoctorsConsultedByPatient(Long patientId) {
+        List<Doctor> doctors = doctorRepository.findAllDoctorsByPatientId(patientId);
+        return doctors.stream()
+                .map(doctorMapper::toDTO)
+                .toList();
+    }
+
 }

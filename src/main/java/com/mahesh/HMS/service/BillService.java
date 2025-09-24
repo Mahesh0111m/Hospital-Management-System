@@ -12,7 +12,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class BillService {
@@ -66,4 +68,23 @@ public class BillService {
     public void deleteBillbyId(Long id) {
         billRepository.deleteById(id);
     }
+
+    public List<BillDTO> getBillsByPatientId(Long patientId){
+        List<Bill> bills = billRepository.findAllByPatientId(patientId);
+        return bills.stream()
+                .map(billMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    public Double getTotalBilledAmountForPatient(Long patientId) {
+        Double totalAmount = billRepository.getTotalBilledAmountByPatientId(patientId);
+        return totalAmount != null ? totalAmount : 0.0;
+    }
+
+    public Double getTotalRevenueByDoctor(Long doctorId) {
+        Double totalRevenue = billRepository.getTotalRevenueByDoctor(doctorId);
+        return totalRevenue != null ? totalRevenue : 0.0;
+    }
+
+
 }

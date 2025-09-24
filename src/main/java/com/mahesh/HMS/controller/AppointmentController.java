@@ -1,6 +1,7 @@
 package com.mahesh.HMS.controller;
 
 import com.mahesh.HMS.dto.AppointmentDTO;
+import com.mahesh.HMS.dto.PaginatedResponsesDTO;
 import com.mahesh.HMS.model.Appointment;
 import com.mahesh.HMS.model.Doctor;
 import com.mahesh.HMS.model.Patient;
@@ -24,10 +25,18 @@ public class AppointmentController {
     }
 
     @GetMapping
-    public Page<AppointmentDTO> getAllAppointments(@RequestParam(defaultValue = "0") int page ,
-                                                @RequestParam(defaultValue = "10") int size){
-        return appointmentService.getAllAppointments(page , size);
+    public PaginatedResponsesDTO<AppointmentDTO> getAllAppointments(@RequestParam(defaultValue = "0") int page,
+                                                                    @RequestParam(defaultValue = "10") int size) {
+        Page<AppointmentDTO> appointmentPage = appointmentService.getAllAppointments(page, size);
+        return new PaginatedResponsesDTO<>(
+                appointmentPage.getContent(),
+                appointmentPage.getNumber(),
+                appointmentPage.getSize(),
+                appointmentPage.getTotalElements(),
+                appointmentPage.getTotalPages()
+        );
     }
+
 
     @GetMapping("/{id}")
     public AppointmentDTO getAppointmentById(@PathVariable Long id){
@@ -47,5 +56,10 @@ public class AppointmentController {
     @GetMapping("/patient/{patientId}")
     public List<AppointmentDTO> getAppointmentsByPatientId(@PathVariable Long patientId){
        return appointmentService.getAppointmentsByPatientId(patientId);
+    }
+
+    @GetMapping("/doctor/{doctorId}")
+    public List<AppointmentDTO> getAppointmentsByDoctorId(@PathVariable Long doctorId){
+        return appointmentService.getAppointmentsByDoctorId(doctorId); // bill excluded
     }
 }

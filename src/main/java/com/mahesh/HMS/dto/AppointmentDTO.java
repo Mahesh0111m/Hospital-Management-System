@@ -1,8 +1,10 @@
 package com.mahesh.HMS.dto;
 
+import java.time.LocalDate;
+
 public class AppointmentDTO {
     private Long id;
-    private String date;
+    private LocalDate date;
 
     private Long patientId;
     private String patientName;
@@ -13,7 +15,7 @@ public class AppointmentDTO {
     private Long billId;
     private Double billAmount;
 
-    public AppointmentDTO(Long id, String date, Long patientId, String patientName,
+    public AppointmentDTO(Long id, LocalDate date, Long patientId, String patientName,
                           Long doctorId, String doctorName, Long billId, Double billAmount) {
         this.id = id;
         this.date = date;
@@ -34,11 +36,11 @@ public class AppointmentDTO {
         this.id = id;
     }
 
-    public String getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 

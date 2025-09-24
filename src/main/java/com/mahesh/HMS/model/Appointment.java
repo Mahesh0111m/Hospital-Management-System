@@ -3,6 +3,7 @@ package com.mahesh.HMS.model;
 import jakarta.persistence.*;
 
 import javax.print.Doc;
+import java.time.LocalDate;
 
 @Entity
 public class Appointment {
@@ -10,7 +11,7 @@ public class Appointment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String date;
+    private LocalDate date;
 
     @ManyToOne
     @JoinColumn(name = "patientId" , nullable = false)
@@ -55,13 +56,14 @@ public class Appointment {
         this.doctor =doctor;
     }
 
-    public String getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
+
 
 
 }
