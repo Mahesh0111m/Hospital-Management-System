@@ -21,6 +21,7 @@ public class PatientService {
     @Autowired
     private PatientMapper patientMapper;
 
+    // Add a new patient
     public PatientDTO addPatient(Patient patient) {
         try {
             Patient saved = patientRepository.save(patient);
@@ -31,6 +32,7 @@ public class PatientService {
         }
     }
 
+    // Get all patients with pagination
     public Page<PatientDTO> getAllPatients(int page, int size) {
         try {
             return patientRepository.findAll(PageRequest.of(page, size))
@@ -41,6 +43,7 @@ public class PatientService {
         }
     }
 
+    // Get patient by ID
     public PatientDTO getPatientById(Long id) {
         try {
             Optional<Patient> patient = patientRepository.findById(id);
@@ -51,6 +54,7 @@ public class PatientService {
         }
     }
 
+    // Update patient by ID
     public PatientDTO updatePatientbyID(Long id, Patient updatedPatient) {
         try {
             Optional<Patient> existingPatient = patientRepository.findById(id);
@@ -72,6 +76,7 @@ public class PatientService {
         }
     }
 
+    // Delete patient by ID
     public void deletePatientbyId(Long id) {
         try {
             patientRepository.deleteById(id);
@@ -80,11 +85,11 @@ public class PatientService {
         }
     }
 
+    // ✅ Get patients by doctor ID (restored)
     public List<PatientDTO> getPatientsByDoctorId(Long doctorId) {
         List<Patient> patients = patientRepository.findAllPatientsByDoctorId(doctorId);
         return patients.stream()
                 .map(patientMapper::toDTO)
                 .toList();
     }
-
 }

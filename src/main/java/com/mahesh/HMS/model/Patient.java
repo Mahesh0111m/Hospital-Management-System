@@ -1,5 +1,6 @@
 package com.mahesh.HMS.model;
 
+import com.mahesh.HMS.cryptography.StringCryptoConverter;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -9,9 +10,20 @@ public class Patient {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Convert(converter = StringCryptoConverter.class)
     private String name;
+    @Convert(converter = StringCryptoConverter.class)
     private String gender;
+
     private int age;
+
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
+
 
     @OneToMany(mappedBy = "patient" , cascade = CascadeType.ALL, orphanRemoval = true , fetch = FetchType.LAZY)
     private List<Appointment> appointments;

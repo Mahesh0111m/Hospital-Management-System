@@ -1,15 +1,21 @@
 package com.mahesh.HMS.dto;
 
 public class DoctorDTO {
+
     private Long id;
     private String name;
     private String speciality;
+    private String roleId; // added
 
-    // constructor
-    public DoctorDTO(Long id, String name, String speciality) {
+    public DoctorDTO() {
+    }
+
+    // constructor with roleId
+    public DoctorDTO(Long id, String name, String speciality, String roleId) {
         this.id = id;
         this.name = name;
         this.speciality = speciality;
+        this.roleId = roleId;
     }
 
     // getters & setters
@@ -21,4 +27,7 @@ public class DoctorDTO {
 
     public String getSpeciality() { return speciality; }
     public void setSpeciality(String speciality) { this.speciality = speciality; }
+
+    public String getRoleId() { return roleId; }
+    public void setRoleId(String roleId) { this.roleId = roleId; }
 }

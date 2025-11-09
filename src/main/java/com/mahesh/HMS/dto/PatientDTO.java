@@ -5,13 +5,18 @@ public class PatientDTO {
     private String name;
     private String gender;
     private int age;
+    private String roleId; // add this
+
+    public PatientDTO() {
+    }
 
     // constructor
-    public PatientDTO(Long id, String name, String gender, int age) {
+    public PatientDTO(Long id, String name, String gender, int age, String roleId) {
         this.id = id;
         this.name = name;
         this.gender = gender;
         this.age = age;
+        this.roleId = roleId;
     }
 
     // getters & setters
@@ -26,4 +31,7 @@ public class PatientDTO {
 
     public int getAge() { return age; }
     public void setAge(int age) { this.age = age; }
+
+    public String getRoleId() { return roleId; }
+    public void setRoleId(String roleId) { this.roleId = roleId; }
 }

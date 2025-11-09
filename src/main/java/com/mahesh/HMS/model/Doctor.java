@@ -36,6 +36,14 @@ public class Doctor {
     private String name;
     private String speciality;
 
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
+
+
     @OneToMany(
             mappedBy = "doctor",
             cascade = CascadeType.ALL,

@@ -13,7 +13,8 @@ public class PatientMapper {
                 patient.getId(),
                 patient.getName(),
                 patient.getGender(),
-                patient.getAge()
+                patient.getAge(),
+                patient.getUser() != null ? patient.getUser().getRoleId() : null // add roleId
         );
     }
 
@@ -24,6 +25,7 @@ public class PatientMapper {
         patient.setName(dto.getName());
         patient.setGender(dto.getGender());
         patient.setAge(dto.getAge());
+        // roleId belongs to User entity, so not set here
         return patient;
     }
 }

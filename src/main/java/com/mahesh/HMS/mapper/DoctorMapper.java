@@ -12,7 +12,8 @@ public class DoctorMapper {
         return new DoctorDTO(
                 doctor.getId(),
                 doctor.getName(),
-                doctor.getSpeciality()
+                doctor.getSpeciality(),
+                doctor.getUser() != null ? doctor.getUser().getRoleId() : null // map roleId
         );
     }
 
@@ -22,6 +23,7 @@ public class DoctorMapper {
         doctor.setId(dto.getId());
         doctor.setName(dto.getName());
         doctor.setSpeciality(dto.getSpeciality());
+        // roleId is handled via User entity, no changes here
         return doctor;
     }
 }

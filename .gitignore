@@ -31,3 +31,23 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Custom additions for HMS project ###
+
+# Logs and temp files
+logs/
+*.log
+*.tmp
+
+# Environment files
+.env
+*.env
+# Ignore sensitive Spring Boot configs
+application-*.yml
+application-*.yaml
+application-*.properties
+!application-example.properties   # (keep a safe example version)
+
+# OS junk
+.DS_Store
+Thumbs.db
